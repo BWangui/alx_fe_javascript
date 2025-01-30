@@ -92,29 +92,41 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
-// Simulate fetching quotes from a server
-function fetchQuotesFromServer() {
-  // Simulating a server response with a delay (e.g., using a timeout)
-  setTimeout(() => {
-    // Sample mock data that would come from a server
-    const serverQuotes = [
-      { text: "Server quote 1", category: "Inspiration" },
-      { text: "Server quote 2", category: "Motivation" },
-    ];
+// Simulate fetching quotes from the server using async/await and a mock API
+async function fetchQuotesFromServer() {
+  try {
+    // Fetch data from the mock API (JSONPlaceholder)
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
 
-    // Simulate merging server quotes with local quotes
-    const updatedQuotes = [...serverQuotes, ...quotes];
+    // Check if the request was successful
+    if (!response.ok) {
+      throw new Error("Failed to fetch quotes from the server");
+    }
+
+    // Parse the response JSON data
+    const serverQuotes = await response.json();
+
+    // Extract quote text and category from the mock API response (adjust as needed)
+    const formattedQuotes = serverQuotes.map((quote, index) => ({
+      text: quote.title, // Using 'title' as the quote text
+      category: index % 2 === 0 ? "Inspiration" : "Motivation" // Simulating categories
+    }));
+
+    // Simulate merging the server quotes with the local quotes
+    const updatedQuotes = [...formattedQuotes, ...quotes];
     quotes = updatedQuotes;
 
-    // Save to localStorage
+    // Save the merged quotes to localStorage
     saveQuotes();
 
     // Refresh categories and quotes displayed
     populateCategories();
     filterQuotes();
 
-    console.log("Server quotes fetched and merged.");
-  }, 2000); // Simulating a 2-second delay
+    console.log("Server quotes fetched and merged successfully.");
+  } catch (error) {
+    console.error("Error fetching quotes from server:", error);
+  }
 }
 
 // Simulate periodic fetching of new data from the server
