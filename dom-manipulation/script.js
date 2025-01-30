@@ -1,4 +1,3 @@
- // Initial quotes array
 let quotes = [
     { text: "The only limit to our realization of tomorrow is our doubts of today.", category: "Motivation" },
     { text: "Life is what happens when you're busy making other plans.", category: "Life" },
@@ -163,6 +162,10 @@ let quotes = [
       // Save the updated quotes array to localStorage
       saveQuotes();
       filterQuotes(); // Update the displayed quotes
+  
+      // Notify the user that quotes have been synced with the server
+      alert("Quotes synced with server!"); // This is the UI element for data updates
+  
     } catch (error) {
       console.error("Error syncing quotes with the server:", error);
     }
@@ -177,7 +180,7 @@ let quotes = [
     fetchQuotesFromServer();
   
     // Sync quotes with the server every 10 minutes
-    setInterval(syncQuotes, 600000);
+    setInterval(syncQuotes, 600000); // Every 10 minutes
   });
   
   
