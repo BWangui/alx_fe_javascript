@@ -92,6 +92,40 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
+// Simulate fetching quotes from a server
+function fetchQuotesFromServer() {
+  // Simulating a server response with a delay (e.g., using a timeout)
+  setTimeout(() => {
+    // Sample mock data that would come from a server
+    const serverQuotes = [
+      { text: "Server quote 1", category: "Inspiration" },
+      { text: "Server quote 2", category: "Motivation" },
+    ];
+
+    // Simulate merging server quotes with local quotes
+    const updatedQuotes = [...serverQuotes, ...quotes];
+    quotes = updatedQuotes;
+
+    // Save to localStorage
+    saveQuotes();
+
+    // Refresh categories and quotes displayed
+    populateCategories();
+    filterQuotes();
+
+    console.log("Server quotes fetched and merged.");
+  }, 2000); // Simulating a 2-second delay
+}
+
+// Simulate periodic fetching of new data from the server
+function syncWithServer() {
+  fetchQuotesFromServer(); // Fetch data from the "server"
+  setTimeout(syncWithServer, 5000); // Repeat every 5 seconds
+}
+
+// Start syncing with the server on page load
+syncWithServer();
+
 // Initialize on page load
 populateCategories();
 filterQuotes();
