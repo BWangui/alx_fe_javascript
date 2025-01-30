@@ -144,6 +144,30 @@ let quotes = [
     }
   }
   
+  // Function to sync local quotes with the server
+  async function syncQuotes() {
+    try {
+      // Fetch quotes from the server
+      const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+      const serverQuotes = await response.json();
+  
+      // Compare local quotes with server quotes
+      serverQuotes.forEach(serverQuote => {
+        const existingQuote = quotes.find(quote => quote.text === serverQuote.title);
+        if (!existingQuote) {
+          // Add new quotes from the server that are not in the local array
+          quotes.push({ text: serverQuote.title, category: serverQuote.body });
+        }
+      });
+  
+      // Save the updated quotes array to localStorage
+      saveQuotes();
+      filterQuotes(); // Update the displayed quotes
+    } catch (error) {
+      console.error("Error syncing quotes with the server:", error);
+    }
+  }
+  
   // Event listener to initialize the app and load the quotes
   document.addEventListener("DOMContentLoaded", function() {
     loadQuotes();
@@ -151,6 +175,9 @@ let quotes = [
     loadLastSelectedCategory();
     showRandomQuote();
     fetchQuotesFromServer();
+  
+    // Sync quotes with the server every 10 minutes
+    setInterval(syncQuotes, 600000);
   });
   
   
